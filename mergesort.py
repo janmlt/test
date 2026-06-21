@@ -1,51 +1,67 @@
-def ASSIGNMENT(new_list, i, old_list, j):
-    new_list[i] = old_list[j]
-
-
-def mergeSort(list_to_sort_by_merge):
-    if (
-        len(list_to_sort_by_merge) > 1
-        and not len(list_to_sort_by_merge) < 1
-        and len(list_to_sort_by_merge) != 0
-    ):
-        mid = len(list_to_sort_by_merge) // 2
-        left = list_to_sort_by_merge[:mid]
-        right = list_to_sort_by_merge[mid:]
-
-        mergeSort(left)
-        mergeSort(right)
-
-        l = 0
-        r = 0
-        i = 0
-
-        while l < len(left) and r < len(right):
-            if left[l] <= right[r]:
-                ASSIGNMENT(new_list=list_to_sort_by_merge, i=i, old_list=left, j=l)
-                l += 1
-            else:
-                ASSIGNMENT(new_list=list_to_sort_by_merge, i=i, old_list=right, j=r)
-                r += 1
-            i += 1
-
-        while l < len(left):
-            list_to_sort_by_merge[i] = left[l]
-            l += 1
-            i += 1
-
-        while r < len(right):
-            list_to_sort_by_merge[i] = right[r]
-            r += 1
-            i += 1
-
-
 import matplotlib.pyplot as plt
 
+def mergeSort(list): # sortiert das gegebene Array mithilfe von MergeSort Rekursiv aufsteigend
+    if len(list) <= 1:  # Abbruchbedingung 
+        return
+    
+    #Array teilen
+    mid = len(list) // 2      
+    left = list[:mid]
+    right = list[mid:]
+
+    #rekursiver Aufruf
+    mergeSort(left)       #sortiert links vollständig   
+    mergeSort(right)      #sortiert rechts vollständig
+
+    #indices setzen
+    left_index = 0
+    right_index = 0
+    merge_index = 0
+
+    #Merge Verfahren
+    while left_index < len(left) and right_index < len(right): # solange keins von beiden Teilen vollständig durchlaufen wurde
+
+        if left[left_index] <= right[right_index]: # wenn linkes Element kleiner oder gleich rechtes Element wird linkes Element an der Stelle des merge_index gesetzt
+            list[merge_index] = left[left_index]
+            left_index += 1
+        else:                                      # wenn rechts größer als links
+            list[merge_index] = right[right_index]
+            right_index += 1
+
+        merge_index += 1
+
+    # falls ein Teil vollständig durchlaufen kann der Rest angehangen werden
+    while left_index < len(left):
+        list[merge_index] = left[left_index]
+        left_index += 1
+        merge_index += 1
+
+    while right_index < len(right):
+        list[merge_index] = right[right_index]
+        right_index += 1
+        merge_index += 1
+
+
+# Funktion legt Beschriftungen und Layout des Plots fest
+def plot_values(list,title):
+
+    x_values = range(len(list))
+
+    plt.figure()
+    plt.plot(x_values, list)
+    plt.title(title)
+    plt.xlabel("Index")
+    plt.ylabel("Wert")
+    plt.grid(True)
+    plt.show()
+
+
+#Testfall
 my_list = [54, 26, 93, 17, 77, 31, 44, 55, 20]
-x = range(len(my_list))
-plt.plot(x, my_list)
-plt.show()
+
+plot_values(my_list, "unsortiertes Array")
+
 mergeSort(my_list)
-x = range(len(my_list))
-plt.plot(x, my_list)
-plt.show()
+
+plot_values(my_list, "sortiertes Array")
+
